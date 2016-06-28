@@ -9,5 +9,7 @@
   <string name="content_test">Search for a Stock Symbol</string>
   <string name="input_hint">FB</string>
   <string name="input_prefill"></string>
+  <string name="string_symbol">symbol</string>
+  <string name="symbol_error">Stock symbol not found!</string>
   <string name="network_toast">Uh-oh! This app requires an internet connection</string>
 </resources>

@@ -95,7 +95,7 @@ public class StockTaskService extends GcmTaskService{
       // get symbol from params.getExtra and build query
       String stockInput = params.getExtras().getString("symbol");
       try {
-        urlStringBuilder.append(URLEncoder.encode("\""+stockInput+"\")", "UTF-8"));
+        urlStringBuilder.append(URLEncoder.encode("\""+stockInput.toUpperCase()+"\")", "UTF-8"));
       } catch (UnsupportedEncodingException e){
         e.printStackTrace();
       }

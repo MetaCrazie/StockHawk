@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -86,6 +87,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
               @Override public void onItemClick(View v, int position) {
                 //TODO:
                 // do something on item click
+                Intent graphIntent = new Intent(mContext, StocksDetailActivity.class);
+                mCursor.moveToPosition(position);
+                graphIntent.putExtra(getResources().getString(R.string.string_symbol), mCursor.getString(mCursor.getColumnIndex(getResources().getString(R.string.string_symbol))));
+                mContext.startActivity(graphIntent);
               }
             }));
     recyclerView.setAdapter(mCursorAdapter);
@@ -163,7 +168,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   }
 
   public void networkToast(){
-    Toast.makeText(mContext, getString(R.string.network_toast), Toast.LENGTH_SHORT).show();
+    Log.d("StockActivity", "Network info");
+    Toast.makeText(mContext, getString(R.string.network_toast), Toast.LENGTH_LONG).show();
   }
 
   public void restoreActionBar() {
