@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.SyncStateContract;
 import android.support.v4.app.TaskStackBuilder;
@@ -14,6 +15,8 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.sam_chordas.android.stockhawk.R;
+import com.sam_chordas.android.stockhawk.data.QuoteColumns;
+import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.ui.MyStocksActivity;
 import com.sam_chordas.android.stockhawk.ui.StocksDetailActivity;
 
@@ -65,14 +68,6 @@ public class StockWidgetProvider extends AppWidgetProvider {
                     0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setOnClickPendingIntent(R.id.refresh, pendingIntent1);
 
-            Intent updateIntent= new Intent(context, StockWidgetProvider.class);
-            updateIntent.setAction(StockWidgetProvider.TAP_ACTION);
-            updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetIds);
-            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-            PendingIntent updatePendingIntent = PendingIntent.getBroadcast(context, 0, updateIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setPendingIntentTemplate(R.id.widget_listview, updatePendingIntent);
-
 
             // Update Widget on HomeScreen
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,R.id.widget_listview);
@@ -90,6 +85,7 @@ public class StockWidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context,getClass()));
+
             // update All Widgets
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,R.id.widget_listview);
 
