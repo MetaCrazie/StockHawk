@@ -10,6 +10,12 @@
   <string name="input_hint">FB</string>
   <string name="input_prefill"></string>
   <string name="string_symbol">symbol</string>
+  <string name="name">name</string>
+  <string name="price">price</string>
+  <string name="change">change</string>
+  <string name="perc">perc</string>
   <string name="symbol_error">Stock symbol not found!</string>
   <string name="network_toast">Uh-oh! This app requires an internet connection</string>
+  <string name="placeholder_desc">Oops, something went out of order!</string>
+  <string name="widget_placeholder">NO STOCKS TO SHOW</string>
 </resources>

@@ -9,10 +9,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.app.LoaderManager;
 import android.content.Loader;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.util.SortedList;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +44,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Line;
@@ -55,32 +60,63 @@ public class StocksDetailActivity extends AppCompatActivity implements LoaderMan
 
     static private final int CURSOR_LOADER_ID=0;
     private Cursor mCursor;
-    private LineChartView lineChartView;
+    private static LineChartView lineChartView;
+    private String LOG_TAG=StocksDetailActivity.class.getSimpleName();
+    private static String companySymbol;
 
-    private String companySymbol;
-    private String companyName;
-    private String exchangeName;
-    private String currency;
-    private String closePrice;
-    private ArrayList<String> labels;
-    private ArrayList<Float> values;
+    private static String companyBid;
+    private static String companyName;
+    private static String currency;
+
     private boolean isLoaded = false;
+    private static ActionBar actionBar;
+
+    private static TextView nameView;
+    private static TextView bidView;
+    private static TextView currencyView;
+
+   /* @BindView(R.id.cName)
+    static TextView nameView;
+    @BindView(R.id.cBid)
+    static TextView bidView;
+    @BindView(R.id.cCurrency)
+    static TextView currencyView; */
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line_graph);
-        lineChartView= (LineChartView) findViewById(R.id.linechart);
+       /* BottomSheetLayout bottomSheet = (BottomSheetLayout) findViewById(R.id.bottomsheet);
+        bottomSheet.showWithSheetView(LayoutInflater.from(getApplicationContext()).inflate(R.layout.graph_detail, bottomSheet, false));
+*/
+        ButterKnife.bind(this);
         Intent intent = getIntent();
         Bundle args = new Bundle();
+
+        //update resources
         args.putString(getResources().getString(R.string.string_symbol), intent.getStringExtra(getResources().getString(R.string.string_symbol)));
+        args.putString(getResources().getString(R.string.perc), intent.getStringExtra(getResources().getString(R.string.perc)));
+        args.putString(getResources().getString(R.string.change), intent.getStringExtra(getResources().getString(R.string.change)));
+
+        //start AsyncTask to fetch details
         getLoaderManager().initLoader(CURSOR_LOADER_ID, args, this);
-        fetchStockDetails();
+        new FetchStockDetails(getApplicationContext(), companySymbol).execute();
+
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        nameView=(TextView)findViewById(R.id.cName);
+        bidView=(TextView)findViewById(R.id.cBid);
+        currencyView=(TextView)findViewById(R.id.cCurrency);
+        lineChartView= (LineChartView) findViewById(R.id.linechart);
+
+
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         companySymbol= args.getString(getResources().getString(R.string.string_symbol));
+        Log.d(LOG_TAG, companySymbol);
         return new CursorLoader(this, QuoteProvider.Quotes.CONTENT_URI,
                 new String[]{ QuoteColumns.BIDPRICE},
                 QuoteColumns.SYMBOL + " = ?",
@@ -91,110 +127,49 @@ public class StocksDetailActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        Log.d(LOG_TAG, "Loader Finished");
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        Log.d(LOG_TAG, "Loader Reset");
     }
 
-    public void buildData(ArrayList<Float> values) {
+    public static void buildData(ArrayList<Float> values, Bundle bundle) {
         Log.d("Data", "Build started for "+companySymbol);
-        //layout manager
-        final TextView nameView=(TextView)findViewById(R.id.cName);
-        final TextView excView=(TextView)findViewById(R.id.cExchange);
-        final TextView currencyView=(TextView)findViewById(R.id.cCurrency);
-        final TextView bidView=(TextView)findViewById(R.id.cBid);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                nameView.setText(companyName);
-                excView.setText(exchangeName);
-                currencyView.setText(currency);
-                bidView.setText(closePrice);
-            }
-        });
+        companyName=bundle.getString("Company_Name");
+        companyBid=bundle.getString("Bid_Price");
+        currency=bundle.getString("Currency");
 
+        //TODO Try Butterknife
+
+        nameView.setText(companyName);
+        bidView.setText(companyBid);
+        currencyView.setText(currency);
+        actionBar.setTitle(companyName);
+
+        Log.d("Butterknife", "Build started");
+        if(values!=null)
         buildChart(values);
-    }
-    private void buildChart(final ArrayList<Float> value){
-        Log.d("Chart", "Build started for "+companySymbol);
-        StocksDetailActivity.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                List<PointValue> values=new ArrayList<>();
-                for (int i = 0; i < value.size(); i++) {
-                    values.add(new PointValue(i, value.get(i)));
-                }
-                Line line = new Line(values).setColor(Color.YELLOW).setHasLabelsOnlyForSelected(true);
-                List<Line> lines = new ArrayList<>();
-                lines.add(line);
-                LineChartData data = new LineChartData();
-                data.setLines(lines);
 
-                lineChartView.setLineChartData(data);
-                lineChartView.setVisibility(View.VISIBLE);
-            }
-        });
+            //TODO ELSE
+    }
+    private static void buildChart(final ArrayList<Float> value) {
+        Log.d("Chart", "Build started for " + companySymbol);
+        List<PointValue> values = new ArrayList<>();
+        for (int i = 0; i < value.size(); i++) {
+            values.add(new PointValue(i, value.get(i)));
+        }
+        Line line = new Line(values).setColor(Color.YELLOW).setHasLabelsOnlyForSelected(true);
+        List<Line> lines = new ArrayList<>();
+        lines.add(line);
+        LineChartData data = new LineChartData();
+        data.setLines(lines);
+
+        lineChartView.setLineChartData(data);
+        lineChartView.setVisibility(View.VISIBLE);
+
     }
 
-    private void fetchStockDetails() {
-
-        OkHttpClient client=new OkHttpClient();
-        Request request=new Request.Builder()
-                .url("http://chartapi.finance.yahoo.com/instrument/1.0/" + companySymbol + "/chartdata;type=quote;range=5y/json")
-                .build();
-        Log.d("Url built","http://chartapi.finance.yahoo.com/instrument/1.0/" + companySymbol + "/chartdata;type=quote;range=5y/json" );
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                //failed DL
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                if (response.code() == 200){
-                    try{
-                        String result=response.body().string();
-                        //trim string?
-                        result=result.substring(29, result.length());
-                        JSONObject object=new JSONObject(result);
-                        //extract data
-                        companyName=object.getJSONObject("meta").getString("Company-Name");
-                        exchangeName=object.getJSONObject("meta").getString("Exchange-Name");
-                        currency=object.getJSONObject("meta").getString("currency");
-                        closePrice=object.getJSONObject("meta").getString("previous_close_price");
-
-                        labels=new ArrayList<>();
-                        values=new ArrayList<Float>();
-                        JSONArray series=object.getJSONArray("series");
-                        for(int i=0; i<=10; i++)
-                        {
-                            JSONObject seriesItem = series.getJSONObject(i);
-                            SimpleDateFormat srcFormat = new SimpleDateFormat("yyyyMMdd");
-                            String date = android.text.format.DateFormat.
-                                getMediumDateFormat(getApplicationContext()).
-                                format(srcFormat.parse(seriesItem.getString("Date")));
-                            labels.add(date);
-                            values.add(Float.parseFloat(seriesItem.getString("close")));
-                        }
-                        buildData(values);
-
-
-                    }catch (Exception e){
-                        //failed DL
-                        e.printStackTrace();
-                    }
-                }else
-                {
-                    //failed DL
-                }
-
-            }
-        });
-
-
-    }
 
 }

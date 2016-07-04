@@ -2,10 +2,10 @@ package com.sam_chordas.android.stockhawk.service;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.sam_chordas.android.stockhawk.ui.StocksDetailActivity;
-import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -30,6 +30,7 @@ public class FetchStockDetails extends AsyncTask<Void, Void, ArrayList> {
     private String exchangeName;
     private String currency;
     private String closePrice;
+    private String range;
     private ArrayList<String> labels;
     private ArrayList<Float> values;
 
@@ -37,10 +38,9 @@ public class FetchStockDetails extends AsyncTask<Void, Void, ArrayList> {
     {
         mContext=context;
         client=new OkHttpClient();
-        urlString="http://chartapi.finance.yahoo.com/instrument/1.0/" + symbol + "/chartdata;type=quote;range=5y/json";
-        Request request=new Request.Builder()
-                .url(urlString)
-                .build();
+        range="1m";
+        urlString="http://chartapi.finance.yahoo.com/instrument/1.0/" + symbol + "/chartdata;type=quote;range="+ range +"/json";
+
         Log.d("AsyncTask","Started" );
 
 
@@ -52,53 +52,73 @@ public class FetchStockDetails extends AsyncTask<Void, Void, ArrayList> {
                 .url(urlString)
                 .build();
         Log.d("Url built",urlString );
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                //failed DL
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                if (response.code() == 200){
-                    try{
-                        String result=response.body().string();
-                        //trim string?
-                        result=result.substring(29, result.length());
-                        JSONObject object=new JSONObject(result);
-                        //extract data
-                        companyName=object.getJSONObject("meta").getString("Company-Name");
-                        exchangeName=object.getJSONObject("meta").getString("Exchange-Name");
-                        currency=object.getJSONObject("meta").getString("currency");
-                        closePrice=object.getJSONObject("meta").getString("previous_close_price");
-
-                        labels=new ArrayList<>();
-                        values=new ArrayList<Float>();
-                        JSONArray series=object.getJSONArray("series");
-                        for(int i=0; i<=10; i++)
-                        {
-                            JSONObject seriesItem = series.getJSONObject(i);
-                            SimpleDateFormat srcFormat = new SimpleDateFormat("yyyyMMdd");
-                            String date = android.text.format.DateFormat.
-                                    getMediumDateFormat(mContext).
-                                    format(srcFormat.parse(seriesItem.getString("Date")));
-                            labels.add(date);
-                            values.add(Float.parseFloat(seriesItem.getString("close")));
-                        }
-                       //CALL: StocksDetailActivity.buildData(values);
-
-
-                    }catch (Exception e){
-                        //failed DL
-                        e.printStackTrace();
-                    }
-                }else
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            try{
+                String result=response.body().string();
+                //trim string?
+                result=result.substring(29, result.length());
+                JSONObject object=new JSONObject(result);
+                //extract data
+                try{
+                companyName=object.getJSONObject("meta").getString("Company-Name");
+                }catch (Exception e)
                 {
-                    //failed DL
+                    e.printStackTrace();
+                }
+                try{
+                    exchangeName=object.getJSONObject("meta").getString("Exchange-Name");
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                try{
+                    currency=object.getJSONObject("meta").getString("currency");
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                try{
+                    closePrice=object.getJSONObject("meta").getString("previous_close_price");
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
                 }
 
+                labels=new ArrayList<>();
+                values=new ArrayList<Float>();
+                JSONArray series=object.getJSONArray("series");
+                for(int i=0; i<series.length();i++)
+                {
+                    JSONObject seriesItem = series.getJSONObject(i);
+                    SimpleDateFormat srcFormat = new SimpleDateFormat("yyyyMMdd");
+                    String date = android.text.format.DateFormat.
+                            getMediumDateFormat(mContext).
+                            format(srcFormat.parse(seriesItem.getString("Date")));
+                    labels.add(date);
+                    values.add(Float.parseFloat(seriesItem.getString("close")));
+
+                }
+
+
+
+            }catch (Exception e){
+                //failed DL
+                e.printStackTrace();
             }
-        });
-        return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    return values;
+    }
+
+    @Override
+    protected void onPostExecute(ArrayList values) {
+        Bundle bundle=new Bundle();
+        bundle.putString("Company_Name", companyName);
+        bundle.putString("Bid_Price", closePrice);
+        bundle.putString("Currency", currency);
+        StocksDetailActivity.buildData(values, bundle);
     }
 }

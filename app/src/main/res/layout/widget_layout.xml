@@ -1,0 +1,49 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:clipToPadding="true"
+    android:background="@color/material_grey"
+    android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+                <LinearLayout
+                    android:background="@color/material_blue_500"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                        <TextView
+                            android:padding="15dp"
+                            android:id="@+id/widget_head"
+                            android:layout_weight="1"
+                            android:textAllCaps="true"
+                            android:text="@string/app_name"
+                            android:textSize="@dimen/text_header"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content" />
+                        <ImageButton
+                            android:background="@color/material_blue_500"
+                            android:src="@drawable/ic_refresh_white_48pt"
+                            android:scaleType="fitXY"
+                            android:id="@+id/refresh"
+                            android:layout_marginRight="@dimen/text_header"
+                            android:layout_gravity="center"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp" />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/widget_textview"
+                    android:gravity="center"
+                    android:text="@string/widget_placeholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <ListView
+                    android:clipToPadding="false"
+                    android:id="@+id/widget_listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                </ListView>
+        </LinearLayout>
+</FrameLayout>
