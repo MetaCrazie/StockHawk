@@ -14,8 +14,23 @@
   <string name="price">price</string>
   <string name="change">change</string>
   <string name="perc">perc</string>
+  <string name="range">range</string>
+
+  <string name="details_symbol">symbol:</string>
+  <string name="details_bid">bid price:</string>
+  <string name="details_currency">currency:</string>
+  <string name="details_change_percent">change(%):</string>
+  <string name="details_change_amount">change(USD):</string>
+  <string name="details_highest">highest bid:</string>
+  <string name="details_lowest">lowest bid:</string>
+
+  <string name="graph_range_detail">Displaying stock data over range:</string>
   <string name="symbol_error">Stock symbol not found!</string>
   <string name="network_toast">Uh-oh! This app requires an internet connection</string>
   <string name="placeholder_desc">Oops, something went out of order!</string>
   <string name="widget_placeholder">NO STOCKS TO SHOW</string>
+
+  <string name="one_month">&#160;1m&#160;</string>
+  <string name="six_months">&#160;6m&#160;</string>
+  <string name="one_year">&#160;1y&#160;</string>
 </resources>

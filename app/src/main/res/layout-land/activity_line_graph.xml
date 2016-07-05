@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
 <LinearLayout android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,15 +10,17 @@
     android:layout_width="match_parent">
 
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_weight="1"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="0dp"
+        android:orientation="vertical"
+        android:layout_weight="2"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.CardView
-            android:layout_margin="8dp"
+            android:layout_margin="@dimen/margin_8"
             app:cardBackgroundColor="@color/cardview_dark_background"
             app:cardElevation="3dp"
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <lecho.lib.hellocharts.view.LineChartView
@@ -24,66 +29,44 @@
                 android:layout_height="match_parent" />
 
         </android.support.v7.widget.CardView>
-
-
-    </FrameLayout>
-
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_weight="3"
-        android:layout_height="match_parent">
-        <LinearLayout
+        <android.support.v7.widget.CardView
+            android:layout_marginRight="@dimen/margin_8"
+            android:layout_marginLeft="@dimen/margin_8"
+            android:layout_marginBottom="@dimen/margin_8"
+            app:cardBackgroundColor="@color/cardview_dark_background"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:padding="10dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Stock Name"
-                        android:textSize="24dp"
-                        android:id="@+id/cName"/>
-
-                </LinearLayout>
-
+            android:layout_height="wrap_content">
             <LinearLayout
-
-                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
                 <TextView
-                    android:padding="10dp"
-                    android:layout_weight="1"
+                    android:paddingLeft="10dp"
+                    android:text="@string/graph_range_detail"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/cExchange"
-                    android:text="Stock Details"/>
+                    android:layout_height="wrap_content" />
                 <TextView
-                    android:padding="10dp"
-                    android:layout_weight="1"
+                    android:id="@+id/display_range"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Currency"
-                    android:id="@+id/cCurrency"/>
-                <TextView
-                    android:padding="10dp"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="BidPrice"
-                    android:id="@+id/cBid"/>
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
+        </android.support.v7.widget.CardView>
 
-        </LinearLayout>
 
-    </FrameLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+        <include layout="@layout/graph_detail"/>
+
+
+
+
+    </LinearLayout>
 </LinearLayout>
-
+    <include layout="@layout/circular_fab_menu"/>
+</android.support.design.widget.CoordinatorLayout>

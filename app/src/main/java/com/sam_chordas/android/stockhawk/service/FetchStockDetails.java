@@ -1,6 +1,7 @@
 package com.sam_chordas.android.stockhawk.service;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,14 +32,18 @@ public class FetchStockDetails extends AsyncTask<Void, Void, ArrayList> {
     private String currency;
     private String closePrice;
     private String range;
+    private String highest;
+    private String lowest;
     private ArrayList<String> labels;
     private ArrayList<Float> values;
+    private SharedPreferences sharedPreferences;
 
     public FetchStockDetails(Context context, String symbol)
     {
         mContext=context;
         client=new OkHttpClient();
-        range="1m";
+        sharedPreferences = mContext.getSharedPreferences("Range", Context.MODE_PRIVATE);
+        range=sharedPreferences.getString("Range", "1m");
         urlString="http://chartapi.finance.yahoo.com/instrument/1.0/" + symbol + "/chartdata;type=quote;range="+ range +"/json";
 
         Log.d("AsyncTask","Started" );
@@ -84,6 +89,16 @@ public class FetchStockDetails extends AsyncTask<Void, Void, ArrayList> {
                 {
                     e.printStackTrace();
                 }
+                try{
+                    JSONObject close=object.getJSONObject("ranges").getJSONObject("close");
+                    highest=close.getString("max");
+                    lowest=close.getString("min");
+                    Log.d(LOG_TAG, highest);
+                    Log.d(LOG_TAG, lowest);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
 
                 labels=new ArrayList<>();
                 values=new ArrayList<Float>();
@@ -119,6 +134,8 @@ public class FetchStockDetails extends AsyncTask<Void, Void, ArrayList> {
         bundle.putString("Company_Name", companyName);
         bundle.putString("Bid_Price", closePrice);
         bundle.putString("Currency", currency);
+        bundle.putString("Highest", highest);
+        bundle.putString("Lowest", lowest);
         StocksDetailActivity.buildData(values, bundle);
     }
 }

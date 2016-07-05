@@ -21,4 +21,11 @@
     <item name="android:textAllCaps">true</item>
   </style>
 
+  <style name="Fab_Textview">
+    <item name="android:background">@drawable/rounded_corner</item>
+    <item name="android:elevation">7dp</item>
+    <item name="android:textSize">10sp</item>
+    <item name="android:textColor">@color/material_blue_500</item>
+  </style>
+
 </resources>

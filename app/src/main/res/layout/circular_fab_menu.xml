@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.sa90.materialarcmenu.ArcMenu android:id="@+id/arcMenu"
+    app:menu_open="arc_left"
+    app:menu_radius="100dp"
+    app:menu_scr="@drawable/ic_add_white"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|end"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab1"
+            app:fabSize="mini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Fab_Textview"
+            android:text="@string/one_month"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab2"
+            app:fabSize="mini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Fab_Textview"
+            android:text="@string/six_months"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab3"
+            app:fabSize="mini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Fab_Textview"
+            android:text="@string/one_year"/>
+    </FrameLayout>
+</com.sa90.materialarcmenu.ArcMenu>
