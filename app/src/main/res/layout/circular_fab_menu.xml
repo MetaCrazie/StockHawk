@@ -2,6 +2,8 @@
 <com.sa90.materialarcmenu.ArcMenu android:id="@+id/arcMenu"
     app:menu_open="arc_left"
     app:menu_radius="100dp"
+    app:menu_animation_time="500"
+    app:menu_ripple_color="@color/material_blue_600"
     app:menu_scr="@drawable/ic_add_white"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

@@ -106,7 +106,6 @@ public class StocksDetailActivity extends AppCompatActivity implements LoaderMan
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_line_graph);
        /* BottomSheetLayout bottomSheet = (BottomSheetLayout) findViewById(R.id.bottomsheet);
         bottomSheet.showWithSheetView(LayoutInflater.from(getApplicationContext()).inflate(R.layout.graph_detail, bottomSheet, false));
 */
@@ -124,6 +123,8 @@ public class StocksDetailActivity extends AppCompatActivity implements LoaderMan
         args.putString(getResources().getString(R.string.string_symbol), companySymbol);
 
         sharedPreferences=getSharedPreferences("Range", MODE_PRIVATE);
+
+        setContentView(R.layout.activity_line_graph);
 
         //start AsyncTask to fetch details
         getLoaderManager().initLoader(CURSOR_LOADER_ID, args, this);
