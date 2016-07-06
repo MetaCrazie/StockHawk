@@ -17,6 +17,7 @@
                             android:padding="15dp"
                             android:id="@+id/widget_head"
                             android:layout_weight="1"
+                            android:contentDescription="@string/app_name"
                             android:textAllCaps="true"
                             android:text="@string/app_name"
                             android:textSize="@dimen/text_header"
@@ -26,6 +27,7 @@
                             android:background="@color/material_blue_500"
                             android:src="@drawable/ic_refresh_white_48pt"
                             android:scaleType="fitXY"
+                            android:contentDescription="@string/desc_refresh"
                             android:id="@+id/refresh"
                             android:layout_marginRight="@dimen/text_header"
                             android:layout_gravity="center"
@@ -35,6 +37,7 @@
                 <TextView
                     android:id="@+id/widget_textview"
                     android:gravity="center"
+                    android:contentDescription="@string/desc_no_stocks"
                     android:text="@string/widget_placeholder"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />

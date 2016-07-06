@@ -2,9 +2,12 @@ package com.sam_chordas.android.stockhawk.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.sam_chordas.android.stockhawk.ui.StocksDetailActivity;
 import com.squareup.okhttp.OkHttpClient;
@@ -47,80 +50,86 @@ public class FetchStockDetails extends AsyncTask<Void, Void, ArrayList> {
         urlString="http://chartapi.finance.yahoo.com/instrument/1.0/" + symbol + "/chartdata;type=quote;range="+ range +"/json";
     }
 
+    public boolean isConnected(){
+        ConnectivityManager cm =
+                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return( activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting());
+    }
+
     @Override
     protected ArrayList doInBackground(Void... params) {
-        Request request=new Request.Builder()
+        Request request = new Request.Builder()
                 .url(urlString)
                 .build();
         Response response = null;
-        try {
-            response = client.newCall(request).execute();
-            try{
-                String result=response.body().string();
-                //trim string?
-                result=result.substring(29, result.length());
-                JSONObject object=new JSONObject(result);
-                //extract data
-                try{
-                companyName=object.getJSONObject("meta").getString("Company-Name");
-                }catch (Exception e)
-                {
+        if (isConnected()) {
+            try {
+                response = client.newCall(request).execute();
+                try {
+                    String result = response.body().string();
+                    //trim string?
+                    result = result.substring(29, result.length());
+                    JSONObject object = new JSONObject(result);
+                    //extract data
+                    try {
+                        companyName = object.getJSONObject("meta").getString("Company-Name");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        exchangeName = object.getJSONObject("meta").getString("Exchange-Name");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        currency = object.getJSONObject("meta").getString("currency");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        closePrice = object.getJSONObject("meta").getString("previous_close_price");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        JSONObject close = object.getJSONObject("ranges").getJSONObject("close");
+                        highest = close.getString("max");
+                        lowest = close.getString("min");
+                        Log.d(LOG_TAG, highest);
+                        Log.d(LOG_TAG, lowest);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                    labels = new ArrayList<>();
+                    values = new ArrayList<>();
+                    JSONArray series = object.getJSONArray("series");
+                    for (int i = 0; i < series.length(); i++) {
+                        JSONObject seriesItem = series.getJSONObject(i);
+                        SimpleDateFormat srcFormat = new SimpleDateFormat("yyyyMMdd");
+                        String date = android.text.format.DateFormat.
+                                getMediumDateFormat(mContext).
+                                format(srcFormat.parse(seriesItem.getString("Date")));
+                        labels.add(date);
+                        values.add(Float.parseFloat(seriesItem.getString("close")));
+
+                    }
+
+
+                } catch (Exception e) {
+                    //failed DL
                     e.printStackTrace();
                 }
-                try{
-                    exchangeName=object.getJSONObject("meta").getString("Exchange-Name");
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                try{
-                    currency=object.getJSONObject("meta").getString("currency");
-                }catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                try{
-                    closePrice=object.getJSONObject("meta").getString("previous_close_price");
-                }catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                try{
-                    JSONObject close=object.getJSONObject("ranges").getJSONObject("close");
-                    highest=close.getString("max");
-                    lowest=close.getString("min");
-                    Log.d(LOG_TAG, highest);
-                    Log.d(LOG_TAG, lowest);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-
-
-                labels=new ArrayList<>();
-                values=new ArrayList<>();
-                JSONArray series=object.getJSONArray("series");
-                for(int i=0; i<series.length();i++)
-                {
-                    JSONObject seriesItem = series.getJSONObject(i);
-                    SimpleDateFormat srcFormat = new SimpleDateFormat("yyyyMMdd");
-                    String date = android.text.format.DateFormat.
-                            getMediumDateFormat(mContext).
-                            format(srcFormat.parse(seriesItem.getString("Date")));
-                    labels.add(date);
-                    values.add(Float.parseFloat(seriesItem.getString("close")));
-
-                }
-
-
-
-            }catch (Exception e){
-                //failed DL
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
-    return values;
+            return values;
+
     }
 
     @Override

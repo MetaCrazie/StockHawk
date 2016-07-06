@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 <LinearLayout android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -25,6 +26,7 @@
                 android:layout_height="0dp">
                     <lecho.lib.hellocharts.view.LineChartView
                         android:id="@+id/linechart"
+                        android:contentDescription="@string/desc_chart"
                         android:visibility="invisible"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
@@ -43,6 +45,7 @@
                     android:layout_height="wrap_content">
                     <TextView
                         android:paddingStart="10dp"
+                        android:contentDescription="@string/desc_showRange"
                         android:text="@string/graph_range_detail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
@@ -54,5 +57,5 @@
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </LinearLayout>
-    <include layout="@layout/circular_fab_menu"/>
+        <include layout="@layout/circular_fab_menu"/>
 </android.support.design.widget.CoordinatorLayout>

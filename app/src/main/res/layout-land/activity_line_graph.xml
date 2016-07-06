@@ -26,6 +26,7 @@
             <lecho.lib.hellocharts.view.LineChartView
                 android:id="@+id/linechart"
                 android:visibility="invisible"
+                android:contentDescription="@string/desc_chart"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
