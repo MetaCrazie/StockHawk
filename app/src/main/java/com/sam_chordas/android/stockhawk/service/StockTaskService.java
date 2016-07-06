@@ -114,7 +114,6 @@ public class StockTaskService extends GcmTaskService{
 
     if (urlStringBuilder != null){
       urlString = urlStringBuilder.toString();
-      Log.d("URL", urlString);
       try{
         getResponse = fetchData(urlString);
         result = GcmNetworkManager.RESULT_SUCCESS;
@@ -134,7 +133,7 @@ public class StockTaskService extends GcmTaskService{
           Log.e(LOG_TAG, getString(R.string.batch_error) , e);
         }
       } catch (IOException e){
-        Toast.makeText(mContext, getText(R.string.network_toast), Toast.LENGTH_LONG).show();
+       /* Toast.makeText(mContext, getText(R.string.network_toast), Toast.LENGTH_LONG).show();*/
         e.printStackTrace();
       }
     }

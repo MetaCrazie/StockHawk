@@ -82,15 +82,16 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     noStocksView=(TextView)findViewById(R.id.no_stocks);
     SharedPreferences settings=getSharedPreferences(myPrefs, 0);
-    if(settings.getBoolean("my_first_time",true)){
+    if(settings.getBoolean("first_run",true)){
       if(isConnected()){
-        settings.edit().putBoolean("my_first_time", false).apply();
+        settings.edit().putBoolean("first_run", false).apply();
         noStocksView.setVisibility(View.GONE);
       }else
         noStocksView.setVisibility(View.VISIBLE);
     }else{
       noStocksView.setVisibility(View.INVISIBLE);
     }
+
 
 
     mServiceIntent = new Intent(this, StockIntentService.class);
@@ -106,6 +107,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
+   /* if(recyclerView!=null){
+      noStocksView.setVisibility(View.INVISIBLE);
+    }*/
     //swipe down to refresh layout
     swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefreshlayout);
     swipeRefreshLayout.setColorSchemeResources(R.color.material_grey);
