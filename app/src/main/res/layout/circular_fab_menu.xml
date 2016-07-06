@@ -3,9 +3,10 @@
     android:contentDescription="@string/desc_arcMenu"
     android:layout_width="wrap_content"
     android:layout_gravity="bottom|end"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-<com.sa90.materialarcmenu.ArcMenu android:id="@+id/arcMenu"
+<com.sa90.materialarcmenu.ArcMenu
+    android:id="@+id/arcMenu"
     app:menu_open="arc_left"
     app:menu_radius="100dp"
     android:labelFor="@string/desc_arcMenu"

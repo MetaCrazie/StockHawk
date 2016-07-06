@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -59,6 +60,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   private Context mContext;
   private Cursor mCursor;
   private static TextView noStocksView;
+  private static String myPrefs;
 
   public boolean isConnected(){
     ConnectivityManager cm =
@@ -79,6 +81,17 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     // GCMTaskService can only schedule tasks, they cannot execute immediately
 
     noStocksView=(TextView)findViewById(R.id.no_stocks);
+    SharedPreferences settings=getSharedPreferences(myPrefs, 0);
+    if(settings.getBoolean("my_first_time",true)){
+      if(isConnected()){
+        settings.edit().putBoolean("my_first_time", false).apply();
+        noStocksView.setVisibility(View.GONE);
+      }else
+        noStocksView.setVisibility(View.VISIBLE);
+    }else{
+      noStocksView.setVisibility(View.INVISIBLE);
+    }
+
 
     mServiceIntent = new Intent(this, StockIntentService.class);
     if (savedInstanceState == null){
@@ -93,10 +106,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
-
-    if(recyclerView!=null)
-      noStocksView.setVisibility(View.GONE);
-
     //swipe down to refresh layout
     swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefreshlayout);
     swipeRefreshLayout.setColorSchemeResources(R.color.material_grey);
@@ -108,6 +117,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
           {
             mServiceIntent.putExtra("tag", "init");
             startService(mServiceIntent);
+            noStocksView.setVisibility(View.INVISIBLE);
           }
           else networkToast();
           swipeRefreshLayout.setRefreshing(false);
