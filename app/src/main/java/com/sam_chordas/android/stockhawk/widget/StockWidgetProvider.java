@@ -53,8 +53,6 @@ public class StockWidgetProvider extends AppWidgetProvider {
             views.setPendingIntentTemplate(R.id.widget_head, pendingIntent);
             appWidgetManager.updateAppWidget(widgetId, views);*/
 
-            Log.d(LOG_TAG, "Widget on click action");
-
             Intent configIntent = new Intent(context, MyStocksActivity.class);
             PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
             views.setOnClickPendingIntent(R.id.widget_head, configPendingIntent);

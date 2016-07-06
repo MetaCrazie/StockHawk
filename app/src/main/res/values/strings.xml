@@ -16,6 +16,12 @@
   <string name="perc">perc</string>
   <string name="range">range</string>
 
+  <string name="no_stocks">No stocks to show</string>
+  <string name="stock_saved">This stock is already saved!</string>
+  <string name="batch_error">Error applying batch insert</string>
+  <string name="dialog_content">A stock monitoring app that shows stock change over time.</string>
+
+  <string name="details">Stock Details</string>
   <string name="details_symbol">symbol:</string>
   <string name="details_bid">bid price:</string>
   <string name="details_currency">currency:</string>

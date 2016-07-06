@@ -96,7 +96,6 @@ public class StockWidgetService extends RemoteViewsService {
                 listItemRemoteView.setTextViewText(R.id.stock_symbol,stockSymbol);
                 listItemRemoteView.setTextViewText(R.id.bid_price,stockBidPrice);
                 listItemRemoteView.setTextViewText(R.id.change,stockPriceChange);
-                Log.d(LOG_TAG, "RemoteView set");
 
                 // if stock price is Up then background of price Change is Green else, Red
                 if (isUp==1)
@@ -126,7 +125,6 @@ public class StockWidgetService extends RemoteViewsService {
         public void onDestroy() {
             if (mCursor!=null)
                 mCursor.close();
-            Log.d(LOG_TAG, "Cursor closed");
         }
 
         @Override

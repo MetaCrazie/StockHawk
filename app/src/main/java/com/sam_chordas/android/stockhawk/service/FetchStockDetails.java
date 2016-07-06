@@ -45,10 +45,6 @@ public class FetchStockDetails extends AsyncTask<Void, Void, ArrayList> {
         sharedPreferences = mContext.getSharedPreferences("Range", Context.MODE_PRIVATE);
         range=sharedPreferences.getString("Range", "1m");
         urlString="http://chartapi.finance.yahoo.com/instrument/1.0/" + symbol + "/chartdata;type=quote;range="+ range +"/json";
-
-        Log.d("AsyncTask","Started" );
-
-
     }
 
     @Override
@@ -56,7 +52,6 @@ public class FetchStockDetails extends AsyncTask<Void, Void, ArrayList> {
         Request request=new Request.Builder()
                 .url(urlString)
                 .build();
-        Log.d("Url built",urlString );
         Response response = null;
         try {
             response = client.newCall(request).execute();
@@ -101,7 +96,7 @@ public class FetchStockDetails extends AsyncTask<Void, Void, ArrayList> {
 
 
                 labels=new ArrayList<>();
-                values=new ArrayList<Float>();
+                values=new ArrayList<>();
                 JSONArray series=object.getJSONArray("series");
                 for(int i=0; i<series.length();i++)
                 {

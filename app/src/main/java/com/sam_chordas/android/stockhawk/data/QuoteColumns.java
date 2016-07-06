@@ -2,6 +2,7 @@ package com.sam_chordas.android.stockhawk.data;
 
 import net.simonvt.schematic.annotation.AutoIncrement;
 import net.simonvt.schematic.annotation.DataType;
+import net.simonvt.schematic.annotation.Database;
 import net.simonvt.schematic.annotation.NotNull;
 import net.simonvt.schematic.annotation.PrimaryKey;
 

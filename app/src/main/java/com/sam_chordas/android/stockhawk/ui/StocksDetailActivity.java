@@ -82,10 +82,12 @@ public class StocksDetailActivity extends AppCompatActivity implements LoaderMan
     private static String companyLowest;
 
     private static String range;
+    private static String myPref;
 
     private boolean isLoaded = false;
     private static ActionBar actionBar;
 
+    private static List<PointValue> values;
     private static TextView nameView;
     private static TextView bidView;
     private static TextView currencyView;
@@ -106,13 +108,11 @@ public class StocksDetailActivity extends AppCompatActivity implements LoaderMan
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-       /* BottomSheetLayout bottomSheet = (BottomSheetLayout) findViewById(R.id.bottomsheet);
-        bottomSheet.showWithSheetView(LayoutInflater.from(getApplicationContext()).inflate(R.layout.graph_detail, bottomSheet, false));
-*/
         ButterKnife.bind(this);
         Intent intent = getIntent();
         Bundle args = new Bundle();
         range="1m";
+        myPref="Range";
 
         companySymbol=intent.getStringExtra(getResources().getString(R.string.string_symbol));
         companyBid=intent.getStringExtra(getResources().getString(R.string.price));
@@ -122,56 +122,45 @@ public class StocksDetailActivity extends AppCompatActivity implements LoaderMan
         //update resources
         args.putString(getResources().getString(R.string.string_symbol), companySymbol);
 
-        sharedPreferences=getSharedPreferences("Range", MODE_PRIVATE);
+        sharedPreferences=getSharedPreferences(myPref, MODE_PRIVATE);
 
         setContentView(R.layout.activity_line_graph);
 
-        //start AsyncTask to fetch details
-        getLoaderManager().initLoader(CURSOR_LOADER_ID, args, this);
-        new FetchStockDetails(getApplicationContext(), companySymbol).execute();
-
         actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(R.string.details);
 
-        //nameView=(TextView)findViewById(R.id.cName);
+
         bidView=(TextView)findViewById(R.id.cBid);
-        //currencyView=(TextView)findViewById(R.id.cCurrency);
         symbolView=(TextView)findViewById(R.id.cSymbol);
         amountView=(TextView)findViewById(R.id.cAmount);
         percentView=(TextView)findViewById(R.id.cPercent);
         highestView=(TextView)findViewById(R.id.cHighest);
         lowestView=(TextView)findViewById(R.id.cLowest);
         rangeView=(TextView)findViewById(R.id.display_range);
+        nameView=(TextView)findViewById(R.id.cName);
 
         bidView.setText(companyBid);
         symbolView.setText(companySymbol);
         percentView.setText(companyPercent);
         amountView.setText(companyAmount);
-
-
         lineChartView= (LineChartView) findViewById(R.id.linechart);
-       // final FrameLayout linearLayout=(FrameLayout)findViewById(R.id.landscape_details);
+
+        //start AsyncTask to fetch details
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, args, this);
+        new FetchStockDetails(getApplicationContext(), companySymbol).execute();
+
 
         //FAB Activity
         final ArcMenu arcMenu=(ArcMenu)findViewById(R.id.arcMenu);
-      /*  arcMenu.setOnClickListener(new View.OnClickListener(){
-                @Override
-            public void onClick(View view){
-                    if(arcMenu.isMenuOpened()){
-                        Log.d(LOG_TAG, "Menu opened");
-                        linearLayout.setVisibility(View.INVISIBLE);
-                        Log.d(LOG_TAG, "Set invisible");
-                    }
-                }
-        });*/
-
         FloatingActionButton fab1= (FloatingActionButton) arcMenu.findViewById(R.id.fab1);
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SharedPreferences.Editor editor=sharedPreferences.edit();
-                editor.putString("Range", "1m");
-                editor.commit();
+                editor.putString(myPref, "1m");
+                editor.apply();
                 new FetchStockDetails(getApplicationContext(), companySymbol).execute();
                 arcMenu.toggleMenu();
             }
@@ -181,8 +170,8 @@ public class StocksDetailActivity extends AppCompatActivity implements LoaderMan
             @Override
             public void onClick(View view) {
                 SharedPreferences.Editor editor=sharedPreferences.edit();
-                editor.putString("Range", "6m");
-                editor.commit();
+                editor.putString(myPref, "6m");
+                editor.apply();
                 new FetchStockDetails(getApplicationContext(), companySymbol).execute();
                 arcMenu.toggleMenu();
             }
@@ -192,8 +181,8 @@ public class StocksDetailActivity extends AppCompatActivity implements LoaderMan
             @Override
             public void onClick(View view) {
                 SharedPreferences.Editor editor=sharedPreferences.edit();
-                editor.putString("Range", "1y");
-                editor.commit();
+                editor.putString(myPref, "1y");
+                editor.apply();
                 new FetchStockDetails(getApplicationContext(), companySymbol).execute();
                 arcMenu.toggleMenu();
             }
@@ -224,32 +213,23 @@ public class StocksDetailActivity extends AppCompatActivity implements LoaderMan
     }
 
     public static void buildData(ArrayList<Float> values, Bundle bundle) {
-        Log.d("Data", "Build started for "+companySymbol);
         companyName=bundle.getString("Company_Name");
         companyBid=bundle.getString("Bid_Price");
         currency=bundle.getString("Currency");
         companyHighest=bundle.getString("Highest");
         companyLowest=bundle.getString("Lowest");
 
-        //TODO Try Butterknife
-
         bidView.setText(companyBid);
         highestView.setText(companyHighest);
         lowestView.setText(companyLowest);
+        nameView.setText(companyName);
 
-        //currencyView.setText(currency);
-        actionBar.setTitle(companyName);
-
-        Log.d("Butterknife", "Build started");
         if(values!=null)
         buildChart(values);
-
-            //TODO ELSE
     }
     private static void buildChart(final ArrayList<Float> value) {
-        Log.d("Chart", "Build started for " + companySymbol);
-        List<PointValue> values = new ArrayList<>();
-        range=sharedPreferences.getString("Range", "1m");
+        values = new ArrayList<>();
+        range=sharedPreferences.getString(myPref, "1m");
         rangeView.setText(range);
         for (int i = 0, j=0; i < value.size();j++) {
             values.add(new PointValue(j, value.get(i)));
