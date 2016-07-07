@@ -20,6 +20,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
+        android:paddingBottom="@dimen/widget_margin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/desc_recycler_view"
@@ -33,6 +34,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:src="@drawable/ic_add_white_24dp"
+        fab:paddingBottom="48dp"
+        android:clipToPadding="false"
         fab:fab_colorNormal="@color/material_blue_500"
         fab:fab_colorPressed="@color/material_blue_600"
         fab:fab_colorRipple="@color/ripple"

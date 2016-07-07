@@ -13,7 +13,10 @@
 
                 <LinearLayout
 
-                    android:paddingStart="6dp"
+                    android:paddingStart="@dimen/margin_6"
+                    android:paddingLeft="@dimen/margin_6"
+                    android:paddingEnd="@dimen/margin_6"
+                    android:paddingRight="@dimen/margin_6"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
